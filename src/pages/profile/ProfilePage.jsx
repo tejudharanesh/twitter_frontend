@@ -13,6 +13,7 @@ import { MdEdit } from "react-icons/md";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatMemberSinceDate } from "../../utils/date/index.js";
+import { apiRequest } from "../../utils/api.js";
 
 import useFollow from "../../hooks/useFollow.jsx";
 import { toast } from "react-hot-toast";
@@ -38,43 +39,16 @@ const ProfilePage = () => {
   } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      try {
-        const response = await fetch(`/api/users/profile/${username}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        if (data.error) throw new Error(data.error);
-        if (!response.ok) throw new Error(data.error || "failed to fetch user");
-        return data;
-      } catch (error) {
-        throw new Error(error.message);
-      }
+      return await apiRequest(`/api/users/profile/${username}`, "GET");
     },
   });
 
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
     mutationFn: async () => {
-      try {
-        const response = await fetch(`/api/users/update/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            coverImage: coverImg,
-            profileImage: profileImg,
-          }),
-        });
-        const data = await response.json();
-        if (data.error) return null;
-        if (!response.ok) throw new Error(data.error || "failed to fetch user");
-        return data;
-      } catch (error) {
-        throw new Error(error.message);
-      }
+      return await apiRequest("/api/users/update/", "POST", {
+        coverImage: coverImg,
+        profileImage: profileImg,
+      });
     },
     onSuccess: () => {
       toast.success("Profile updated successfully");

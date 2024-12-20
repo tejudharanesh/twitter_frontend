@@ -8,6 +8,7 @@ import NotificationPage from "./pages/notification/NotificationPage.jsx";
 import ProfilePage from "./pages/profile/ProfilePage.jsx";
 import { Toaster } from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "./utils/api.js";
 
 import LoadingSpinner from "./components/common/LoadingSpinner.jsx";
 
@@ -20,21 +21,7 @@ function App() {
   } = useQuery({
     queryKey: ["authUser"],
     queryFn: async () => {
-      try {
-        const response = await fetch("/api/auth/me", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        if (data.error) return null;
-        if (!response.ok) throw new Error(data.error || "failed to fetch user");
-        return data;
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
+      return await apiRequest("/api/auth/me", "GET");
     },
     retry: false,
   });

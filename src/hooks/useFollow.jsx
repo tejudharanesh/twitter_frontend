@@ -1,20 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "../utils/api.js";
 
 const useFollow = () => {
   const queryClient = useQueryClient();
   const { mutate: follow, isPending } = useMutation({
     mutationFn: async (userId) => {
-      try {
-        const response = await fetch(`/api/users/follow/${userId}`, {
-          method: "POST",
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Failed to follow");
-        return data;
-      } catch (error) {
-        throw new Error(error);
-      }
+      return await apiRequest(`/users/follow/${userId}`, "POST");
     },
     onSuccess: () => {
       Promise.all([

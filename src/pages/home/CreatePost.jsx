@@ -5,6 +5,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import Picker from "@emoji-mart/react";
 import { useRef, useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "../../utils/api";
 
 const CreatePost = () => {
   const [text, setText] = useState("");
@@ -23,24 +24,9 @@ const CreatePost = () => {
     isPending,
   } = useMutation({
     mutationFn: async ({ img, text }) => {
-      try {
-        const response = await fetch("/api/posts/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ text, img }),
-        });
-        const data = await response.json();
-
-        if (!response.ok)
-          throw new Error(data.error || "failed to create post");
-        return data;
-      } catch (error) {
-        throw new Error(error);
-      }
+      return await apiRequest("/api/posts/create", "POST", { img, text });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setImg(null);
       setText("");
       toast.success("Post created successfully");
@@ -143,10 +129,7 @@ const CreatePost = () => {
             {isPending ? "Posting..." : "Post"}
           </button>
           {showEmojiPicker && (
-            <div
-              ref={emojiPickerRef}
-              className="absolute top-12 -left-10 z-10"
-            >
+            <div ref={emojiPickerRef} className="absolute top-12 -left-10 z-10">
               <Picker onEmojiSelect={handleEmojiSelect} theme="dark" />
             </div>
           )}

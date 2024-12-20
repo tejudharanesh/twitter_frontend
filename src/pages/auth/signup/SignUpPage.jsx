@@ -11,6 +11,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { toast } from "react-hot-toast";
 
+import { apiRequest } from "../../../utils/api";
+
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -22,25 +24,12 @@ const SignUpPage = () => {
 
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: async ({ email, username, fullName, password }) => {
-      try {
-        const response = await fetch("/api/auth/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, username, fullName, password }),
-        });
-
-        const data = await response.json();
-        if (!response.ok)
-          throw new Error(data.error || "failed to create account");
-
-        console.log(data);
-        return data;
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
+      return await apiRequest("/api/auth/signup", "POST", {
+        email,
+        username,
+        fullName,
+        password,
+      });
     },
     onSuccess: () => {
       toast.success("Account created successfully");

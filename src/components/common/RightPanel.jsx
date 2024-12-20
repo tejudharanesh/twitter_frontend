@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import useFollow from "../../hooks/useFollow";
 import LoadingSpinner from "../common/LoadingSpinner";
 
+import { apiRequest } from "../../utils/api";
+
 const RightPanel = () => {
   const {
     data: suggestedUsers,
@@ -13,19 +15,7 @@ const RightPanel = () => {
   } = useQuery({
     queryKey: ["suggestedUsers"],
     queryFn: async () => {
-      try {
-        const response = await fetch("/api/users/suggested", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "failed to fetch user");
-        return data;
-      } catch (error) {
-        throw new Error(error);
-      }
+      return await apiRequest("/api/users/suggested", "GET");
     },
   });
 

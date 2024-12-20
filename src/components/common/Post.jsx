@@ -9,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import LoadingSpinner from "./LoadingSpinner";
 import { formatPostDate } from "../../utils/date/index.js";
+import { apiRequest } from "../../utils/api.js";
 
 const Post = ({ post, index }) => {
   const [comment, setComment] = useState("");
@@ -25,21 +26,7 @@ const Post = ({ post, index }) => {
 
   const { mutate: deletePost, isPending: isDeleting } = useMutation({
     mutationFn: async () => {
-      try {
-        const response = await fetch(`/api/posts/${post._id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        if (!response.ok)
-          throw new Error(data.error || "failed to delete post");
-        return data;
-      } catch (error) {
-        console.log(error);
-        throw new Error(error);
-      }
+      return await apiRequest(`/api/posts/${post._id}`, "DELETE");
     },
     onSuccess: () => {
       toast.success("Post deleted successfully");
@@ -52,20 +39,7 @@ const Post = ({ post, index }) => {
 
   const { mutate: likePost, isPending: isLiking } = useMutation({
     mutationFn: async () => {
-      try {
-        const response = await fetch(`/api/posts/like/${post._id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        if (!response.ok)
-          throw new Error(data.error || "failed to delete post");
-        return data;
-      } catch (error) {
-        throw new Error(error);
-      }
+      return await apiRequest(`/api/posts/like/${post._id}`, "POST");
     },
     onSuccess: (updatedLikes) => {
       // queryClient.invalidateQueries({ queryKey: ["posts"] });
@@ -88,21 +62,9 @@ const Post = ({ post, index }) => {
 
   const { mutate: commentPost, isPending: isCommenting } = useMutation({
     mutationFn: async () => {
-      try {
-        const response = await fetch(`/api/posts/comment/${post._id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ text: comment }),
-        });
-        const data = await response.json();
-        if (!response.ok)
-          throw new Error(data.error || "failed to delete post");
-        return data;
-      } catch (error) {
-        throw new Error(error);
-      }
+      return await apiRequest(`/api/posts/comment/${post._id}`, "POST", {
+        text: comment,
+      });
     },
     onSuccess: (updatedComments) => {
       toast.success("Comment added successfully");
@@ -152,8 +114,10 @@ const Post = ({ post, index }) => {
             to={`/profile/${postOwner.username}`}
             className="w-8 h-8 rounded-full overflow-hidden"
           >
-            <img src={postOwner.profileImage || "/avatar-placeholder.png"}
-            className="w-4 h-4" />
+            <img
+              src={postOwner.profileImage || "/avatar-placeholder.png"}
+              className="w-4 h-4"
+            />
           </Link>
         </div>
         <div className="flex flex-col flex-1">

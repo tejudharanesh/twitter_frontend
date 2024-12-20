@@ -7,45 +7,21 @@ import { FaHeart } from "react-icons/fa6";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
+import { apiRequest } from "../../utils/api";
+
 const NotificationPage = () => {
   const queryClient = useQueryClient();
   const { data: notifications, isLoading } = useQuery({
     queryKey: ["notifications"],
     queryFn: async () => {
-      try {
-        const response = await fetch("/api/notifications", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        if (data.error) return null;
-        if (!response.ok) throw new Error(data.error || "failed to fetch user");
-        return data;
-      } catch (error) {
-        throw new Error(error.message);
-      }
+      return await apiRequest("/api/notifications", "GET");
     },
     retry: false,
   });
 
   const { mutate: deleteNotifications } = useMutation({
     mutationFn: async () => {
-      try {
-        const response = await fetch("/api/notifications", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        if (data.error) return null;
-        if (!response.ok) throw new Error(data.error || "failed to fetch user");
-        return data;
-      } catch (error) {
-        throw new Error(error.message);
-      }
+      return await apiRequest("/api/notifications", "DELETE");
     },
     retry: false,
     onSuccess: () => {

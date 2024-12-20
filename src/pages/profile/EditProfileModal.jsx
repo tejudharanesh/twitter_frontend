@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "../../utils/api";
 const EditProfileModal = ({ authUser }) => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -15,21 +16,7 @@ const EditProfileModal = ({ authUser }) => {
 
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
     mutationFn: async () => {
-      try {
-        const response = await fetch(`/api/users/update/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
-        const data = await response.json();
-        if (data.error) throw new Error(data.error);
-        if (!response.ok) throw new Error(data.error || "failed to fetch user");
-        return data;
-      } catch (error) {
-        throw new Error(error.message);
-      }
+      return await apiRequest("/api/users/update/", "POST", formData);
     },
     onSuccess: () => {
       toast.success("Profile updated successfully");
