@@ -10,7 +10,6 @@ export default defineConfig({
       "/api": {
         target: "https://twitter-j89n.onrender.com",
         changeOrigin: true,
-        secure: false, // Set to false if you're using HTTP on the backend (adjust as needed)
       },
     },
   },
