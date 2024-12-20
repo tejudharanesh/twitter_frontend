@@ -89,7 +89,7 @@ const CreatePost = () => {
       <div className="avatar">
         <div className="w-8 rounded-full">
           <img
-            src={authUser?.profileImg || "/avatar-placeholder.png"}
+            src={authUser?.profileImage || "/avatar-placeholder.png"}
             alt="Profile"
           />
         </div>
