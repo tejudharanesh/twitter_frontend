@@ -9,12 +9,7 @@ console.log("hdjdj", API_ENDPOINT);
  * @param {Object} headers - Additional request headers (optional).
  * @returns {Promise<Object>} - Resolves with JSON response or rejects with error.
  */
-export const apiRequest = async (
-  path,
-  method = "GET",
-  body = null,
-  headers = {}
-) => {
+export const apiRequest = async (path, method, body = null, headers = {}) => {
   try {
     const response = await fetch(`${API_ENDPOINT}${path}`, {
       method,
