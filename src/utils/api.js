@@ -18,6 +18,7 @@ export const apiRequest = async (path, method, body = null, headers = {}) => {
         ...headers,
       },
       ...(body && { body: JSON.stringify(body) }),
+      credentials: true,
     });
 
     const data = await response.json();
