@@ -1,4 +1,5 @@
-const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_BACKEND_ENDPOINT;
+console.log("hdjdj", API_ENDPOINT);
 
 /**
  * Wrapper for API calls with fetch.
