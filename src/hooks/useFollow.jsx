@@ -6,7 +6,7 @@ const useFollow = () => {
   const queryClient = useQueryClient();
   const { mutate: follow, isPending } = useMutation({
     mutationFn: async (userId) => {
-      return await apiRequest(`/users/follow/${userId}`, "POST");
+      return await apiRequest(`/api/users/follow/${userId}`, "POST");
     },
     onSuccess: () => {
       Promise.all([

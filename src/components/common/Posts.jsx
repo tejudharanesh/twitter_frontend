@@ -5,7 +5,6 @@ import React from "react";
 import { useEffect } from "react";
 import { apiRequest } from "../../utils/api";
 const Posts = ({ feedType, username, userId }) => {
-  console.log(feedType, username, userId);
 
   const getPostEndpoint = () => {
     switch (feedType) {

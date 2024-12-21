@@ -1,34 +1,34 @@
-const API_ENDPOINT = "https://twitter-j89n.onrender.com";
-console.log("hdjdj", API_ENDPOINT);
+import axios from "axios";
+
+const API_ENDPOINT = "http://localhost:5000";
+console.log("API Endpoint:", API_ENDPOINT);
 
 /**
- * Wrapper for API calls with fetch.
+ * Wrapper for API calls with axios.
  * @param {string} path - The API endpoint path (relative to API base URL).
  * @param {string} method - The HTTP method (e.g., GET, POST, etc.).
  * @param {Object} body - The request payload (optional).
  * @param {Object} headers - Additional request headers (optional).
  * @returns {Promise<Object>} - Resolves with JSON response or rejects with error.
  */
-export const apiRequest = async (path, method, body = null, headers = {}) => {
+export const apiRequest = async (path, method, body, headers = {}) => {
   try {
-    const response = await fetch(`${API_ENDPOINT}${path}`, {
+    const response = await axios({
+      url: `${API_ENDPOINT}${path}`,
       method,
       headers: {
         "Content-Type": "application/json",
         ...headers,
       },
-      ...(body && { body: JSON.stringify(body) }),
-      credentials: "include",
+      data: body, // Axios handles null/undefined data automatically
+      withCredentials: true, // Ensures cookies are sent with the request
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Something went wrong");
-    }
-
-    return data;
+    return response.data; // Axios responses include the data in a 'data' field
   } catch (error) {
-    throw new Error(error.message);
+    // Extract meaningful error messages
+    const errorMessage =
+      error.response?.data?.error || error.message || "Something went wrong";
+    throw new Error(errorMessage);
   }
 };
