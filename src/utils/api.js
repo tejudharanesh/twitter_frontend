@@ -1,4 +1,4 @@
-const API_ENDPOINT = import.meta.env.VITE_BACKEND_ENDPOINT;
+const API_ENDPOINT = "https://twitter-j89n.onrender.com";
 console.log("hdjdj", API_ENDPOINT);
 
 /**
